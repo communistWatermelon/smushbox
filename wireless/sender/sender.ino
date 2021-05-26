@@ -26,7 +26,7 @@ void setup() {
 //  printf_begin();
   setupPins();
 //  Serial.begin(9600);
-  Serial1.begin(9600);
+  Serial1.begin(115200);
   radio.begin(); /* Activate the modem*/
   radio.enableDynamicPayloads();
   radio.setAutoAck(true);
