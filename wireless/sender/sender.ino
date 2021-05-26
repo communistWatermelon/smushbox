@@ -25,7 +25,7 @@ void setupPins(){
 void setup() {
 //  printf_begin();
   setupPins();
-  Serial.begin(9600);
+//  Serial.begin(9600);
   Serial1.begin(9600);
   radio.begin(); /* Activate the modem*/
   radio.enableDynamicPayloads();
@@ -49,11 +49,11 @@ void loop() {
     }
     Serial1.readBytes(dataToSend, readLength);
 
-    for (uint8_t i = 0; i < readLength; i++) {
-      Serial.print(dataToSend[i]);
-    }
-    Serial.println("");
-    Serial.flush();
+//    for (uint8_t i = 0; i < readLength; i++) {
+//      Serial.print(dataToSend[i]);
+//    }
+//    Serial.println("");
+//    Serial.flush();
       
     if (currentTime - previousSendTime >= sendInterval) { 
       radio.write(dataToSend, readLength); /* Sending data over NRF 24L01*/
