@@ -11,10 +11,7 @@ const byte readLength = 18;
 
 const byte endMarkerValue = 3;
 
-uint32_t previousData; 
-
-const unsigned long sendInterval = 5;
-unsigned long previousSendTime = 0;
+uint32_t previousData;
 
 void setupPins(){
   pinMode(pinOBLED, OUTPUT);  
@@ -55,10 +52,6 @@ void loop() {
 //    Serial.println("");
 //    Serial.flush();
       
-    if (currentTime - previousSendTime >= sendInterval) { 
-      radio.write(dataToSend, readLength); /* Sending data over NRF 24L01*/
-      radio.txStandBy(1000);
-      previousSendTime = currentTime;
-    }
+    radio.write(dataToSend, readLength); /* Sending data over NRF 24L01*/
   }
 }
