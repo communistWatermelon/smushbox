@@ -1,7 +1,7 @@
 #include <SPI.h>                  /* to handle the communication interface with the modem*/
 #include <nRF24L01.h>             /* to handle this particular modem driver*/
 #include <RF24.h>                 /* the library which helps us to control the radio modem*/
-//#include <printf.h>
+#include <printf.h>
 
 #define pinOBLED 21  //Onboard LED pin
 
@@ -13,6 +13,8 @@ const byte endMarkerValue = 3;
 
 uint32_t previousData; 
 
+bool debugMode = false;
+
 const unsigned long sendInterval = 5;
 unsigned long previousSendTime = 0;
 
@@ -23,9 +25,11 @@ void setupPins(){
 }
 
 void setup() {
-//  printf_begin();
   setupPins();
-//  Serial.begin(9600);
+  if (debugMode) {
+    printf_begin();
+    Serial.begin(9600);
+  }
   Serial1.begin(115200);
   radio.begin(); /* Activate the modem*/
   radio.enableDynamicPayloads();
@@ -49,11 +53,13 @@ void loop() {
     }
     Serial1.readBytes(dataToSend, readLength);
 
-//    for (uint8_t i = 0; i < readLength; i++) {
-//      Serial.print(dataToSend[i]);
-//    }
-//    Serial.println("");
-//    Serial.flush();
+    if (debugMode) {
+      for (uint8_t i = 0; i < readLength; i++) {
+        Serial.print(dataToSend[i]);
+      }
+      Serial.println("");
+      Serial.flush();
+    }
       
     if (currentTime - previousSendTime >= sendInterval) { 
       radio.write(dataToSend, readLength); /* Sending data over NRF 24L01*/
