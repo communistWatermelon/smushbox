@@ -11,6 +11,8 @@ const byte endMarkerValue = 3;
 const unsigned long sendInterval = 50;
 unsigned long previousSendTime = 0;
 
+bool debugMode = false;
+
 #define START_MARKER 0
 #define BUTTONUP 1
 #define BUTTONDOWN 2
@@ -90,7 +92,9 @@ void setupPins(){
 }
 void setup() {
   setupPins();
-//  Serial.begin(9600);
+  if (debugMode) {
+    Serial.begin(9600);
+  }
   Serial1.begin(115200);
 }
 
@@ -147,11 +151,13 @@ void sendData() {
   dataToSend[BUTTONMODDOWN] = buttonStatus[BUTTONMODDOWN] ? 1 : 0;
   dataToSend[END_MARKER] = endMarkerValue;
 
-//  for (uint8_t i = 0; i < arrLength; i++) {
-//    Serial.print(dataToSend[i]);
-//  }
-//  Serial.println("");
-//  Serial.flush();
+  if (debugMode) {
+    for (uint8_t i = 0; i < arrLength; i++) {
+      Serial.print(dataToSend[i]);
+    }
+    Serial.println("");
+    Serial.flush();
+  }
   
   Serial1.write(dataToSend, arrLength);
   Serial1.flush();
