@@ -79,16 +79,6 @@ bool wasCRIGHT = false;
 bool wasCUP = false;
 bool wasCDOWN = false;
 
-bool lockLEFT = false;
-bool lockRIGHT = false;
-bool lockUP = false;
-bool lockDOWN = false;
-
-bool lockCLEFT = false;
-bool lockCRIGHT = false;
-bool lockCUP = false;
-bool lockCDOWN = false;
-
 void setupPins(){        
   pinMode(pinOBLED, OUTPUT);  
   //Set the LED to low to make sure it is off
@@ -333,7 +323,6 @@ void processButtons() {
     }
   }
   
-  if (buttonStatus[BUTTONA] == 1) {ReportData.Button |= A_MASK_ON;}
   if (buttonStatus[BUTTONB] == 1) {ReportData.Button |= B_MASK_ON;}
   if (buttonStatus[BUTTONX] == 1) {ReportData.Button |= X_MASK_ON;}
   if (buttonStatus[BUTTONY] == 1) {ReportData.Button |= Y_MASK_ON;}
@@ -358,11 +347,19 @@ void processButtons() {
   else { ReportData.HAT = DPAD_NOTHING_MASK_ON; }
   
   // Control sticks
-  
-  ReportData.LX = controlX;//1 * (controlX - 128);
-  ReportData.LY = (255-controlY);//-1 * (controlY - 128);
-  ReportData.RX = cstickX;//1 * (cstickX - 128);
-  ReportData.RY = (255-cstickY);//-1 * (cstickY - 128);
+  if (!(isCDOWN || isCUP || isCLEFT || isCRIGHT)) {
+    if (buttonStatus[BUTTONA] == 1) {ReportData.Button |= A_MASK_ON;}
+    ReportData.LX = controlX;//1 * (controlX - 128);  
+    ReportData.LY = (255-controlY);//-1 * (controlY - 128);
+  } else {
+    int removeValueX = 31;
+    int removeValueY = 41;
+    ReportData.LX = max(min(cstickX, 255-removeValueX), removeValueX);
+    ReportData.LY = min(max(255-cstickY, removeValueY), 255-removeValueY);
+    ReportData.Button |= A_MASK_ON;
+  }
+  ReportData.RX = 128;
+  ReportData.RY = 128;
 }
 
 uint8_t fTwoIP(bool isLOW, bool isHIGH, bool& wasLOW, bool& wasHIGH) {
