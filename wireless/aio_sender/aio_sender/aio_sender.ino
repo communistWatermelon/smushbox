@@ -37,23 +37,41 @@ const unsigned long sendInterval = 5;
 #define BUTTONMODDOWN 16
 #define END_MARKER 17
 
+#define BUTTONUP_PIN 7
+#define BUTTONDOWN_PIN 8
+#define BUTTONLEFT_PIN 6
+#define BUTTONRIGHT_PIN 5
+#define BUTTONA_PIN A1
+#define BUTTONB_PIN A2
+#define BUTTONY_PIN A3
+#define BUTTONRB_PIN A4
+#define BUTTONLT_PIN A5
+#define BUTTONRT_PIN 1
+#define CBUTTONUP_PIN 4
+#define CBUTTONDOWN_PIN 3
+#define CBUTTONLEFT_PIN 2
+#define CBUTTONRIGHT_PIN A0
+#define BUTTONMODUP_PIN A7
+#define BUTTONMODDOWN_PIN 0
+
 // can't use 9, 10, 11, 12, 13
 void setupPins(){
-  pinMode(7, INPUT_PULLUP);
-  pinMode(8, INPUT_PULLUP);
-  pinMode(6, INPUT_PULLUP);
-  pinMode(5, INPUT_PULLUP);
-  pinMode(4, INPUT_PULLUP);
-  pinMode(3, INPUT_PULLUP);
-  pinMode(2, INPUT_PULLUP);
-  pinMode(A0, INPUT_PULLUP);
-  pinMode(A1, INPUT_PULLUP);
-  pinMode(A2, INPUT_PULLUP);
-  pinMode(A3, INPUT_PULLUP);
-  pinMode(A4, INPUT_PULLUP);
-  pinMode(A5, INPUT_PULLUP);
-  pinMode(1, INPUT_PULLUP);
-  pinMode(0, INPUT_PULLUP);
+  pinMode(BUTTONUP_PIN, INPUT_PULLUP);
+  pinMode(BUTTONDOWN_PIN, INPUT_PULLUP);
+  pinMode(BUTTONLEFT_PIN, INPUT_PULLUP);
+  pinMode(BUTTONRIGHT_PIN, INPUT_PULLUP);
+  pinMode(BUTTONA_PIN, INPUT_PULLUP);
+  pinMode(BUTTONB_PIN, INPUT_PULLUP);
+  pinMode(BUTTONY_PIN, INPUT_PULLUP);
+  pinMode(BUTTONRB_PIN, INPUT_PULLUP);
+  pinMode(BUTTONLT_PIN, INPUT_PULLUP);
+  pinMode(BUTTONRT_PIN, INPUT_PULLUP);
+  pinMode(CBUTTONUP_PIN, INPUT_PULLUP);
+  pinMode(CBUTTONDOWN_PIN, INPUT_PULLUP);
+  pinMode(CBUTTONLEFT_PIN, INPUT_PULLUP);
+  pinMode(CBUTTONRIGHT_PIN, INPUT_PULLUP);
+  pinMode(BUTTONMODUP_PIN, INPUT_PULLUP);
+  pinMode(BUTTONMODDOWN_PIN, INPUT_PULLUP);
 }
 void setup() {
   if (debugMode) {
@@ -80,28 +98,29 @@ byte readAnalogValue(int pin) {
   int total = 0;
   for (uint8_t i = 0; i < 5; i++) {
     total += analogRead(pin);
+    delay(1); // need this delay for the read to work, thanks arduino
   }
-  return total == 0 ? 1 : 0;
+  return total == LOW ? 1 : 0;
 }
 
 void buttonRead()
 {
-  buttonStatus[BUTTONUP] = digitalRead(7);
-  buttonStatus[BUTTONDOWN] = digitalRead(8);
-  buttonStatus[BUTTONLEFT] = digitalRead(6);
-  buttonStatus[BUTTONRIGHT] = digitalRead(5);
-  buttonStatus[BUTTONMODUP] = readAnalogValue(A7);
-  buttonStatus[BUTTONMODDOWN] = digitalRead(0);
-  buttonStatus[CBUTTONUP] = digitalRead(4);
-  buttonStatus[CBUTTONDOWN] = digitalRead(3);
-  buttonStatus[CBUTTONLEFT] = digitalRead(6);
-  buttonStatus[CBUTTONRIGHT] = digitalRead(15);
-  buttonStatus[BUTTONB] = digitalRead(A2);
-  buttonStatus[BUTTONY] = digitalRead(A3);
-  buttonStatus[BUTTONRB] = digitalRead(A4);
-  buttonStatus[BUTTONA] = digitalRead(A1);
-  buttonStatus[BUTTONLT] = digitalRead(A5);
-  buttonStatus[BUTTONRT] = digitalRead(1);
+  buttonStatus[BUTTONUP] = digitalRead(BUTTONUP_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONDOWN] = digitalRead(BUTTONDOWN_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONLEFT] = digitalRead(BUTTONLEFT_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONRIGHT] = digitalRead(BUTTONRIGHT_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONMODUP] = readAnalogValue(BUTTONMODUP_PIN);
+  buttonStatus[BUTTONMODDOWN] = digitalRead(BUTTONMODDOWN_PIN) == LOW ? 1 : 0;
+  buttonStatus[CBUTTONUP] = digitalRead(CBUTTONUP_PIN) == LOW ? 1 : 0;
+  buttonStatus[CBUTTONDOWN] = digitalRead(CBUTTONDOWN_PIN) == LOW ? 1 : 0;
+  buttonStatus[CBUTTONLEFT] = digitalRead(CBUTTONLEFT_PIN) == LOW ? 1 : 0;
+  buttonStatus[CBUTTONRIGHT] = digitalRead(CBUTTONRIGHT_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONB] = digitalRead(BUTTONB_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONY] = digitalRead(BUTTONY_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONRB] = digitalRead(BUTTONRB_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONA] = digitalRead(BUTTONA_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONLT] = digitalRead(BUTTONLT_PIN) == LOW ? 1 : 0;
+  buttonStatus[BUTTONRT] = digitalRead(BUTTONRT_PIN) == LOW ? 1 : 0;
 }
 
 void debugPrint(String line, int button) {
