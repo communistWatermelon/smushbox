@@ -1,11 +1,7 @@
-#define BOUNCE_WITH_PROMPT_DETECTION
-#include <Bounce2.h>
 #include <SPI.h>                  /* to handle the communication interface with the modem*/
 #include <nRF24L01.h>             /* to handle this particular modem driver*/
 #include <RF24.h>                 /* the library which helps us to control the radio modem*/
 #include <printf.h>
-
-#define MILLIDEBOUNCE 1 //Debounce time in milliseconds
 
 byte buttonStatus[18] = { 0 };
 const byte startMarkerValue = 2;
@@ -41,55 +37,23 @@ const unsigned long sendInterval = 5;
 #define BUTTONMODDOWN 16
 #define END_MARKER 17
 
-Bounce joystickUP = Bounce();
-Bounce joystickDOWN = Bounce();
-Bounce joystickLEFT = Bounce();
-Bounce joystickRIGHT = Bounce();
-Bounce buttonA = Bounce();
-Bounce buttonB = Bounce();
-Bounce buttonY = Bounce();
-Bounce buttonRB = Bounce();
-Bounce buttonRT = Bounce();
-Bounce buttonLT = Bounce();
-Bounce buttonModDown = Bounce();
-Bounce cstickUP = Bounce();
-Bounce cstickDOWN = Bounce();
-Bounce cstickLEFT = Bounce();
-Bounce cstickRIGHT = Bounce();
-
 // can't use 9, 10, 11, 12, 13
 void setupPins(){
-  joystickUP.attach(7,INPUT_PULLUP);
-  joystickDOWN.attach(8,INPUT_PULLUP);
-  joystickLEFT.attach(6,INPUT_PULLUP);
-  joystickRIGHT.attach(5,INPUT_PULLUP);
-  cstickUP.attach(4,INPUT_PULLUP); 
-  cstickDOWN.attach(3,INPUT_PULLUP); 
-  cstickLEFT.attach(2,INPUT_PULLUP); 
-  cstickRIGHT.attach(A0,INPUT_PULLUP); 
-  buttonA.attach(A1,INPUT_PULLUP);
-  buttonB.attach(A2,INPUT_PULLUP); 
-  buttonY.attach(A3,INPUT_PULLUP);
-  buttonRB.attach(A4,INPUT_PULLUP);
-  buttonLT.attach(A5,INPUT_PULLUP);
-  buttonRT.attach(1,INPUT_PULLUP);
-  buttonModDown.attach(0,INPUT_PULLUP);
-
-  joystickUP.interval(MILLIDEBOUNCE);
-  joystickDOWN.interval(MILLIDEBOUNCE);
-  joystickLEFT.interval(MILLIDEBOUNCE);
-  joystickRIGHT.interval(MILLIDEBOUNCE);
-  cstickUP.interval(MILLIDEBOUNCE);
-  cstickDOWN.interval(MILLIDEBOUNCE);
-  cstickLEFT.interval(MILLIDEBOUNCE);
-  cstickRIGHT.interval(MILLIDEBOUNCE);
-  buttonA.interval(MILLIDEBOUNCE);
-  buttonB.interval(MILLIDEBOUNCE);
-  buttonY.interval(MILLIDEBOUNCE);
-  buttonRB.interval(MILLIDEBOUNCE);
-  buttonLT.interval(MILLIDEBOUNCE);
-  buttonRT.interval(MILLIDEBOUNCE);
-  buttonModDown.interval(MILLIDEBOUNCE);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(8, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(5, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(A0, INPUT_PULLUP);
+  pinMode(A1, INPUT_PULLUP);
+  pinMode(A2, INPUT_PULLUP);
+  pinMode(A3, INPUT_PULLUP);
+  pinMode(A4, INPUT_PULLUP);
+  pinMode(A5, INPUT_PULLUP);
+  pinMode(1, INPUT_PULLUP);
+  pinMode(0, INPUT_PULLUP);
 }
 void setup() {
   if (debugMode) {
@@ -122,26 +86,22 @@ byte readAnalogValue(int pin) {
 
 void buttonRead()
 {
-  if (joystickUP.update()) {buttonStatus[BUTTONUP] = joystickUP.fell();}
-  if (joystickDOWN.update()) {buttonStatus[BUTTONDOWN] = joystickDOWN.fell();}
-  if (joystickLEFT.update()) {buttonStatus[BUTTONLEFT] = joystickLEFT.fell();}
-  if (joystickRIGHT.update()) {buttonStatus[BUTTONRIGHT] = joystickRIGHT.fell();}
-
+  buttonStatus[BUTTONUP] = digitalRead(7);
+  buttonStatus[BUTTONDOWN] = digitalRead(8);
+  buttonStatus[BUTTONLEFT] = digitalRead(6);
+  buttonStatus[BUTTONRIGHT] = digitalRead(5);
   buttonStatus[BUTTONMODUP] = readAnalogValue(A7);
-  if (buttonModDown.update()) {buttonStatus[BUTTONMODDOWN] = buttonModDown.fell();}
-
-  if (cstickUP.update()) { buttonStatus[CBUTTONUP] = cstickUP.fell(); }
-  if (cstickDOWN.update()) { buttonStatus[CBUTTONDOWN] = cstickDOWN.fell(); }
-  if (cstickLEFT.update()) { buttonStatus[CBUTTONLEFT] = cstickLEFT.fell(); }
-  if (cstickRIGHT.update()) { buttonStatus[CBUTTONRIGHT] = cstickRIGHT.fell(); }
-
-  if (buttonB.update()) {buttonStatus[BUTTONB] = buttonB.fell();}  
-  if (buttonY.update()) {buttonStatus[BUTTONY] = buttonY.fell();}
-  if (buttonRB.update()) {buttonStatus[BUTTONRB] = buttonRB.fell();}
-  
-  if (buttonA.update()) {buttonStatus[BUTTONA] = buttonA.fell();}
-  if (buttonLT.update()) {buttonStatus[BUTTONLT] = buttonLT.fell();}
-  if (buttonRT.update()) {buttonStatus[BUTTONRT] = buttonRT.fell();}
+  buttonStatus[BUTTONMODDOWN] = digitalRead(0);
+  buttonStatus[CBUTTONUP] = digitalRead(4);
+  buttonStatus[CBUTTONDOWN] = digitalRead(3);
+  buttonStatus[CBUTTONLEFT] = digitalRead(6);
+  buttonStatus[CBUTTONRIGHT] = digitalRead(15);
+  buttonStatus[BUTTONB] = digitalRead(A2);
+  buttonStatus[BUTTONY] = digitalRead(A3);
+  buttonStatus[BUTTONRB] = digitalRead(A4);
+  buttonStatus[BUTTONA] = digitalRead(A1);
+  buttonStatus[BUTTONLT] = digitalRead(A5);
+  buttonStatus[BUTTONRT] = digitalRead(1);
 }
 
 void debugPrint(String line, int button) {
