@@ -104,7 +104,9 @@ void loop() {
   if (radio.available()) {
     byte rx_data[18] = { 0 };
     /* Variable to store received data */
-    radio.read(rx_data, 18);/* Read the received data and store in ' rx_data ' */
+    while (radio.available()) {
+      radio.read(rx_data, 18);/* Read the received data and store in ' rx_data ' */
+    }
     buttonRead(rx_data);
     processButtons();
   } else {
