@@ -179,7 +179,6 @@ void sendData() {
       Serial.flush();
     }
     radio.write(dataToSend, sizeof(dataToSend)); /* Sending data over NRF 24L01*/
-    radio.txStandBy(sendInterval);
     previousSendTime = currentTime;
   }
 }
