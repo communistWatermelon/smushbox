@@ -98,7 +98,7 @@ byte readAnalogValue(int pin) {
   int total = 0;
   for (uint8_t i = 0; i < 5; i++) {
     total += analogRead(pin);
-    delay(1); // need this delay for the read to work, thanks arduino
+    delay(3); // need this delay for the read to work, thanks arduino
   }
   return total == LOW ? 1 : 0;
 }
@@ -179,7 +179,6 @@ void sendData() {
       Serial.flush();
     }
     radio.write(dataToSend, sizeof(dataToSend)); /* Sending data over NRF 24L01*/
-    radio.txStandBy(sendInterval);
     previousSendTime = currentTime;
   }
 }
