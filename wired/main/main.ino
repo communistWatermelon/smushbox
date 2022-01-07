@@ -103,43 +103,43 @@ bool lockCUP = false;
 bool lockCDOWN = false;
 
 void setupPins(){
-    joystickUP.attach(5,INPUT_PULLUP);
-    joystickDOWN.attach(3,INPUT_PULLUP);
-    joystickLEFT.attach(4,INPUT_PULLUP);
-    joystickRIGHT.attach(2,INPUT_PULLUP);
-    cstickUP.attach(19,INPUT_PULLUP);
-    cstickDOWN.attach(20,INPUT_PULLUP);
-    cstickLEFT.attach(9,INPUT_PULLUP);
-    cstickRIGHT.attach(18,INPUT_PULLUP);
-    buttonA.attach(21,INPUT_PULLUP);
-    buttonB.attach(15,INPUT_PULLUP);;
-    buttonY.attach(10,INPUT_PULLUP);
-    buttonRB.attach(16,INPUT_PULLUP);
-    buttonLT.attach(8,INPUT_PULLUP);
-    buttonRT.attach(14,INPUT_PULLUP);
-    buttonModUp.attach(6,INPUT_PULLUP);
-    buttonModDown.attach(7,INPUT_PULLUP);
+  joystickUP.attach(5,INPUT_PULLUP);
+  joystickDOWN.attach(3,INPUT_PULLUP);
+  joystickLEFT.attach(4,INPUT_PULLUP);
+  joystickRIGHT.attach(2,INPUT_PULLUP);
+  cstickUP.attach(19,INPUT_PULLUP);
+  cstickDOWN.attach(20,INPUT_PULLUP);
+  cstickLEFT.attach(9,INPUT_PULLUP);
+  cstickRIGHT.attach(18,INPUT_PULLUP);
+  buttonA.attach(21,INPUT_PULLUP);
+  buttonB.attach(15,INPUT_PULLUP);;
+  buttonY.attach(10,INPUT_PULLUP);
+  buttonRB.attach(16,INPUT_PULLUP);
+  buttonLT.attach(8,INPUT_PULLUP);
+  buttonRT.attach(14,INPUT_PULLUP);
+  buttonModUp.attach(6,INPUT_PULLUP);
+  buttonModDown.attach(7,INPUT_PULLUP);
 
-    joystickUP.interval(MILLIDEBOUNCE);
-    joystickDOWN.interval(MILLIDEBOUNCE);
-    joystickLEFT.interval(MILLIDEBOUNCE);
-    joystickRIGHT.interval(MILLIDEBOUNCE);
-    cstickUP.interval(MILLIDEBOUNCE);
-    cstickDOWN.interval(MILLIDEBOUNCE);
-    cstickLEFT.interval(MILLIDEBOUNCE);
-    cstickRIGHT.interval(MILLIDEBOUNCE);
-    buttonA.interval(MILLIDEBOUNCE);
-    buttonB.interval(MILLIDEBOUNCE);
-    buttonY.interval(MILLIDEBOUNCE);
-    buttonRB.interval(MILLIDEBOUNCE);
-    buttonLT.interval(MILLIDEBOUNCE);
-    buttonRT.interval(MILLIDEBOUNCE);
-    buttonModUp.interval(MILLIDEBOUNCE);
-    buttonModDown.interval(MILLIDEBOUNCE);
-        
-    pinMode(pinOBLED, OUTPUT);  
-    //Set the LED to low to make sure it is off
-    digitalWrite(pinOBLED, HIGH);
+  joystickUP.interval(MILLIDEBOUNCE);
+  joystickDOWN.interval(MILLIDEBOUNCE);
+  joystickLEFT.interval(MILLIDEBOUNCE);
+  joystickRIGHT.interval(MILLIDEBOUNCE);
+  cstickUP.interval(MILLIDEBOUNCE);
+  cstickDOWN.interval(MILLIDEBOUNCE);
+  cstickLEFT.interval(MILLIDEBOUNCE);
+  cstickRIGHT.interval(MILLIDEBOUNCE);
+  buttonA.interval(MILLIDEBOUNCE);
+  buttonB.interval(MILLIDEBOUNCE);
+  buttonY.interval(MILLIDEBOUNCE);
+  buttonRB.interval(MILLIDEBOUNCE);
+  buttonLT.interval(MILLIDEBOUNCE);
+  buttonRT.interval(MILLIDEBOUNCE);
+  buttonModUp.interval(MILLIDEBOUNCE);
+  buttonModDown.interval(MILLIDEBOUNCE);
+      
+  pinMode(pinOBLED, OUTPUT);  
+  //Set the LED to low to make sure it is off
+  digitalWrite(pinOBLED, HIGH);
 }
 void setup() {
   setupPins();
@@ -148,11 +148,11 @@ void setup() {
 }
 
 void loop() {
-    buttonRead();
-    processButtons();
-    HID_Task();
-    // We also need to run the main USB management task.
-    USB_USBTask();
+  buttonRead();
+  processButtons();
+  HID_Task();
+  // We also need to run the main USB management task.
+  USB_USBTask();
 }
 
 void buttonRead()
@@ -193,6 +193,9 @@ void buttonRead()
     if (cstickDOWN.update()) {buttonStatus[CBUTTONDOWN] = cstickDOWN.fell();}
     if (cstickLEFT.update()) {buttonStatus[CBUTTONLEFT] = cstickLEFT.fell();}
     if (cstickRIGHT.update()) {buttonStatus[CBUTTONRIGHT] = cstickRIGHT.fell();}
+
+    if (buttonLT.update()) {buttonStatus[BUTTONLT] = buttonLT.fell();}
+    if (buttonRT.update()) {buttonStatus[BUTTONRT] = buttonRT.fell();}
     
     buttonStatus[BUTTONSTART] = false;
     buttonStatus[BUTTONHOME] = false;
@@ -215,8 +218,6 @@ void buttonRead()
   }
   
   if (buttonA.update()) {buttonStatus[BUTTONA] = buttonA.fell();}
-  if (buttonLT.update()) {buttonStatus[BUTTONLT] = buttonLT.fell();}
-  if (buttonRT.update()) {buttonStatus[BUTTONRT] = buttonRT.fell();}
 }
 
 void processButtons() {
@@ -387,10 +388,19 @@ void processButtons() {
   
   // Control sticks
   
-  ReportData.LX = controlX;//1 * (controlX - 128);
-  ReportData.LY = (255-controlY);//-1 * (controlY - 128);
-  ReportData.RX = cstickX;//1 * (cstickX - 128);
-  ReportData.RY = (255-cstickY);//-1 * (cstickY - 128);
+  if (!(isCDOWN || isCUP || isCLEFT || isCRIGHT)) {
+    if (buttonStatus[BUTTONA] == 1) {ReportData.Button |= A_MASK_ON;}
+    ReportData.LX = controlX;//1 * (controlX - 128);  
+    ReportData.LY = (255-controlY);//-1 * (controlY - 128);
+  } else {
+    int removeValueX = 31;
+    int removeValueY = 41;
+    ReportData.LX = max(min(cstickX, 255-removeValueX), removeValueX);
+    ReportData.LY = min(max(255-cstickY, removeValueY), 255-removeValueY);
+    ReportData.Button |= A_MASK_ON;
+  }
+  ReportData.RX = 128;
+  ReportData.RY = 128;
 }
 
 uint8_t fTwoIP(bool isLOW, bool isHIGH, bool& wasLOW, bool& wasHIGH) {
