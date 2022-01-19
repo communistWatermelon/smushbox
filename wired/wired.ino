@@ -103,22 +103,22 @@ bool lockCUP = false;
 bool lockCDOWN = false;
 
 void setupPins(){
-  joystickUP.attach(5,INPUT_PULLUP);
-  joystickDOWN.attach(3,INPUT_PULLUP);
-  joystickLEFT.attach(4,INPUT_PULLUP);
-  joystickRIGHT.attach(2,INPUT_PULLUP);
-  cstickUP.attach(19,INPUT_PULLUP);
-  cstickDOWN.attach(20,INPUT_PULLUP);
+  joystickUP.attach(16,INPUT_PULLUP);
+  joystickDOWN.attach(A1,INPUT_PULLUP);
+  joystickLEFT.attach(14,INPUT_PULLUP);
+  joystickRIGHT.attach(15,INPUT_PULLUP);
+  cstickUP.attach(6,INPUT_PULLUP);
+  cstickDOWN.attach(10,INPUT_PULLUP);
   cstickLEFT.attach(9,INPUT_PULLUP);
-  cstickRIGHT.attach(18,INPUT_PULLUP);
-  buttonA.attach(21,INPUT_PULLUP);
-  buttonB.attach(15,INPUT_PULLUP);;
-  buttonY.attach(10,INPUT_PULLUP);
-  buttonRB.attach(16,INPUT_PULLUP);
-  buttonLT.attach(8,INPUT_PULLUP);
-  buttonRT.attach(14,INPUT_PULLUP);
-  buttonModUp.attach(6,INPUT_PULLUP);
-  buttonModDown.attach(7,INPUT_PULLUP);
+  cstickRIGHT.attach(7,INPUT_PULLUP);
+  buttonA.attach(8,INPUT_PULLUP);
+  buttonB.attach(A3,INPUT_PULLUP);;
+  buttonY.attach(5,INPUT_PULLUP);
+  buttonRB.attach(2,INPUT_PULLUP);
+  buttonLT.attach(4,INPUT_PULLUP);
+  buttonRT.attach(3,INPUT_PULLUP);
+  buttonModUp.attach(A0,INPUT_PULLUP);
+  buttonModDown.attach(A2,INPUT_PULLUP);
 
   joystickUP.interval(MILLIDEBOUNCE);
   joystickDOWN.interval(MILLIDEBOUNCE);
@@ -212,8 +212,10 @@ void buttonRead()
     if (buttonB.update()) {buttonStatus[BUTTONB] = buttonB.fell();}  
     if (buttonY.update()) {buttonStatus[BUTTONY] = buttonY.fell();}
     if (buttonRB.update()) {buttonStatus[BUTTONRB] = buttonRB.fell();}
-    if (buttonStatus[BUTTONMODUP] || buttonStatus[BUTTONMODDOWN]) {
-      buttonStatus[BUTTONX] = buttonY.fell();
+    if ((buttonStatus[BUTTONMODUP] || buttonStatus[BUTTONMODDOWN]) && buttonStatus[BUTTONY]) {
+      buttonStatus[BUTTONX] = true;
+    } else {
+      buttonStatus[BUTTONX] = false;
     }
   }
   
